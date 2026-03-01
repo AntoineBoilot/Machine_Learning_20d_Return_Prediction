@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAX · ML Signal Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #07080a;
+    --surface: #0f1115;
+    --border: #1e2028;
+    --accent: #ff6b2b;
+    --accent2: #4da6ff;
+    --accent3: #f5a846;
+    --red: #f54646;
+    --text: #e8eaf0;
+    --muted: #5a5e6e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,107,43,.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,43,.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  header { padding: 48px 0 32px; border-bottom: 1px solid var(--border); }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .label-pill {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    background: rgba(255,107,43,.1); color: var(--accent);
+    border: 1px solid rgba(255,107,43,.25); padding: 4px 10px; border-radius: 2px; margin-bottom: 12px;
+  }
+  h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  h1 span { color: var(--accent); }
+  .header-meta { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); line-height: 1.8; text-align: right; }
+  .header-meta strong { color: var(--text); }
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 32px 0;
+  }
+  .kpi { background: var(--surface); padding: 20px 24px; position: relative; overflow: hidden; animation: fadeUp 0.5s ease both; }
+  .kpi:nth-child(1){animation-delay:.05s} .kpi:nth-child(2){animation-delay:.10s}
+  .kpi:nth-child(3){animation-delay:.15s} .kpi:nth-child(4){animation-delay:.20s}
+  .kpi:nth-child(5){animation-delay:.25s} .kpi:nth-child(6){animation-delay:.30s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .kpi::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+    background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform .4s ease;
+  }
+  .kpi:hover::after { transform: scaleX(1); }
+  .kpi-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .kpi-value { font-size:26px; font-weight:700; letter-spacing:-.02em; line-height:1; }
+  .kpi-value.positive{color:var(--accent)} .kpi-value.neutral{color:var(--accent2)} .kpi-value.warn{color:var(--accent3)}
+  .kpi-sub { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:6px; }
+  .section-header { display:flex; align-items:baseline; gap:16px; margin-bottom:20px; }
+  .section-title { font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text); }
+  .section-line { flex:1; height:1px; background:var(--border); }
+  .section-tag { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+  .top-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:40px; }
+  .ticker-card {
+    background:var(--surface); border:1px solid var(--border); padding:24px;
+    position:relative; overflow:hidden; animation:fadeUp .5s ease both; cursor:default;
+    transition:border-color .2s, transform .2s;
+  }
+  .ticker-card:hover { border-color:rgba(255,107,43,.4); transform:translateY(-2px); }
+  .ticker-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+  }
+  .card-rank { position:absolute; top:16px; right:16px; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+  .card-ticker { font-size:22px; font-weight:800; letter-spacing:-.01em; margin-bottom:2px; color:var(--accent); }
+  .card-name { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:20px; }
+  .card-metrics { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .card-metric-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+  .card-metric-value { font-size:18px; font-weight:700; letter-spacing:-.01em; }
+  .card-metric-value.green{color:var(--accent)} .card-metric-value.blue{color:var(--accent2)}
+  .bar-container { margin-top:16px; height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; animation:barGrow .8s ease both; }
+  @keyframes barGrow { from{width:0!important} }
+  .ranking-section { margin-bottom:40px; }
+  table { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:12px; }
+  thead th { text-align:left; padding:10px 16px; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); }
+  tbody tr { border-bottom:1px solid rgba(30,32,40,.8); transition:background .15s; animation:fadeUp .4s ease both; }
+  tbody tr:hover { background:rgba(255,107,43,.03); }
+  tbody tr.top10 { background:rgba(255,107,43,.06); }
+  tbody tr.top10 td:first-child { border-left:2px solid var(--accent); }
+  tbody td { padding:11px 16px; color:var(--text); }
+  tbody td:first-child { font-weight:600; border-left:2px solid transparent; }
+  .val-positive{color:var(--accent)} .val-negative{color:var(--red)} .val-neutral{color:var(--accent2)}
+  .rank-num { color:var(--muted); font-size:10px; }
+  .signal-bar { display:inline-block; height:10px; min-width:2px; border-radius:1px; vertical-align:middle; margin-left:8px; }
+  .charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:40px; }
+  @media(max-width:700px){.charts-grid{grid-template-columns:1fr}}
+  .chart-card { background:var(--surface); border:1px solid var(--border); padding:24px; animation:fadeUp .5s ease both; }
+  .chart-title { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
+  canvas { max-width:100%; }
+  .fold-section { margin-bottom:40px; }
+  .fold-table-wrap { overflow-x:auto; }
+  footer {
+    border-top:1px solid var(--border); padding:24px 0;
+    font-family:'DM Mono',monospace; font-size:10px; color:var(--muted);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .disclaimer {
+    background:rgba(245,70,70,.06); border:1px solid rgba(245,70,70,.15);
+    border-left:3px solid var(--red); padding:12px 16px;
+    font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); line-height:1.7; margin-bottom:40px;
+  }
+  .disclaimer strong { color:var(--red); }
+  .update-badge {
+    display:inline-block; font-family:'DM Mono',monospace; font-size:9px;
+    background:rgba(77,166,255,.1); color:var(--accent2);
+    border:1px solid rgba(77,166,255,.25); padding:3px 8px; border-radius:2px; margin-left:8px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="label-pill">LightGBM · Walk-Forward · DAX</div>
+        <h1>ML Signal<br><span>Dashboard</span></h1>
+      </div>
+      <div class="header-meta">
+        <strong>Univers</strong> DAX · 40 tickers<br>
+        <strong>Horizon</strong> target_20d<br>
+        <strong>Features</strong> {{N_FEATURES}}<br>
+        <strong>Folds</strong> {{N_FOLDS}} · Walk-forward rolling<br>
+        <strong>Top 10%</strong> 4 tickers
+        <span class="update-badge">↻ généré 2026-02-18 11:37</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-label">IC Spearman Moyen</div>
+      <div class="kpi-value positive" id="kpi-ic-s">—</div>
+      <div class="kpi-sub" id="kpi-ic-s-std">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">IC Pearson Moyen</div>
+      <div class="kpi-value positive" id="kpi-ic-p">—</div>
+      <div class="kpi-sub" id="kpi-ic-p-std">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">LS Spread Moyen</div>
+      <div class="kpi-value neutral" id="kpi-ls">—</div>
+      <div class="kpi-sub" id="kpi-ls-std">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">IC Spearman Max</div>
+      <div class="kpi-value positive" id="kpi-ic-s-max">—</div>
+      <div class="kpi-sub" id="kpi-ic-s-max-fold">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">LS Spread Max</div>
+      <div class="kpi-value positive" id="kpi-ls-max">—</div>
+      <div class="kpi-sub" id="kpi-ls-max-fold">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">med_hat (médiane)</div>
+      <div class="kpi-value warn" id="kpi-medhat">—</div>
+      <div class="kpi-sub">rolling 60j de target_20d</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">Top 10% — Signal Long</span>
+    <span class="section-line"></span>
+    <span class="section-tag" id="top-tag">— tickers · horizon 20j</span>
+  </div>
+  <div class="top-grid" id="topCards"></div>
+
+  <div class="section-header">
+    <span class="section-title">Analyse visuelle</span>
+    <span class="section-line"></span>
+    <span class="section-tag">walk-forward · folds</span>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card" style="grid-column:1/-1">
+      <div class="chart-title">Signal prédit — Classement complet (pred_abs_%_hat)</div>
+      <canvas id="rankingChart" height="110"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">IC Spearman & Pearson par fold</div>
+      <canvas id="icChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Long/Short Spread par fold</div>
+      <canvas id="lsChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Pred. absolu vs Pred. excès</div>
+      <canvas id="scatterChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Top features — apparitions dans le top 15</div>
+      <canvas id="featChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="ranking-section">
+    <div class="section-header">
+      <span class="section-title">Classement complet</span>
+      <span class="section-line"></span>
+      <span class="section-tag" id="ranking-tag">— tickers</span>
+    </div>
+    <div class="fold-table-wrap">
+      <table>
+        <thead><tr><th>Rang</th><th>Ticker</th><th>Pred. abs. (%)</th><th>Pred. excès (%)</th><th>Société</th></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="fold-section">
+    <div class="section-header">
+      <span class="section-title">Performance Walk-Forward</span>
+      <span class="section-line"></span>
+      <span class="section-tag" id="fold-tag">— folds</span>
+    </div>
+    <div class="fold-table-wrap">
+      <table>
+        <thead><tr><th>Fold</th><th>Test start</th><th>Test end</th><th>IC Spearman</th><th>IC Pearson</th><th>LS Spread</th><th>Best Iter.</th></tr></thead>
+        <tbody id="foldBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>⚠ Avertissement</strong> — Ce dashboard est fourni à titre informatif uniquement. Les prédictions sont issues d'un modèle ML entraîné sur données historiques. Les rendements passés ne garantissent pas les performances futures. Aucune de ces informations ne constitue un conseil en investissement.
+  </div>
+
+  <footer>
+    <span>LightGBM · Walk-Forward · DAX · 42 features</span>
+    <span>Signal date: {{SIGNAL_DATE}} · med_hat = <span id="footer-medhat">—</span></span>
+  </footer>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     DONNÉES INJECTÉES PAR PYTHON — NE PAS MODIFIER
+     ═══════════════════════════════════════════════ -->
+<script id="injected-data">
+/* INJECT_START */
+const RANKING  = [{"ticker": "BNP.PA", "name": "BNP Paribas", "pred_abs": 3.2658, "pred_exc": 2.7328}, {"ticker": "GLE.PA", "name": "Soc. Générale", "pred_abs": 3.1211, "pred_exc": 2.5889}, {"ticker": "ACA.PA", "name": "Crédit Agricole", "pred_abs": 2.8133, "pred_exc": 2.2826}, {"ticker": "EN.PA", "name": "Bouygues", "pred_abs": 2.3111, "pred_exc": 1.7831}, {"ticker": "LR.PA", "name": "Legrand", "pred_abs": 2.0946, "pred_exc": 1.5677}, {"ticker": "HO.PA", "name": "Thales", "pred_abs": 1.6604, "pred_exc": 1.1356}, {"ticker": "SU.PA", "name": "Schneider", "pred_abs": 1.2249, "pred_exc": 0.7024}, {"ticker": "CS.PA", "name": "AXA", "pred_abs": 1.1878, "pred_exc": 0.6655}, {"ticker": "ORA.PA", "name": "Orange", "pred_abs": 1.0867, "pred_exc": 0.565}, {"ticker": "AIR.PA", "name": "Airbus", "pred_abs": 0.9862, "pred_exc": 0.4649}, {"ticker": "EL.PA", "name": "EssilorLuxottica", "pred_abs": 0.969, "pred_exc": 0.4479}, {"ticker": "BVI.PA", "name": "Bureau Veritas", "pred_abs": 0.9663, "pred_exc": 0.4451}, {"ticker": "RI.PA", "name": "Pernod Ricard", "pred_abs": 0.9125, "pred_exc": 0.3916}, {"ticker": "SAF.PA", "name": "Safran", "pred_abs": 0.8742, "pred_exc": 0.3535}, {"ticker": "DG.PA", "name": "Vinci", "pred_abs": 0.8667, "pred_exc": 0.3461}, {"ticker": "ML.PA", "name": "Michelin", "pred_abs": 0.8625, "pred_exc": 0.3419}, {"ticker": "RMS.PA", "name": "Hermès", "pred_abs": 0.8397, "pred_exc": 0.3192}, {"ticker": "KER.PA", "name": "Kering", "pred_abs": 0.8247, "pred_exc": 0.3043}, {"ticker": "VIE.PA", "name": "Veolia", "pred_abs": 0.7633, "pred_exc": 0.2432}, {"ticker": "OR.PA", "name": "L'Oréal", "pred_abs": 0.7444, "pred_exc": 0.2245}, {"ticker": "AI.PA", "name": "Air Liquide", "pred_abs": 0.7282, "pred_exc": 0.2083}, {"ticker": "RNO.PA", "name": "Renault", "pred_abs": 0.6205, "pred_exc": 0.1011}, {"ticker": "PUB.PA", "name": "Publicis", "pred_abs": 0.6009, "pred_exc": 0.0817}, {"ticker": "BN.PA", "name": "Danone", "pred_abs": 0.5298, "pred_exc": 0.0109}, {"ticker": "ERF.PA", "name": "Eurofins", "pred_abs": 0.5166, "pred_exc": -0.0023}, {"ticker": "MT.AS", "name": "ArcelorMittal", "pred_abs": 0.4608, "pred_exc": -0.0578}, {"ticker": "SGO.PA", "name": "Saint-Gobain", "pred_abs": 0.382, "pred_exc": -0.1361}, {"ticker": "URW.PA", "name": "Unibail", "pred_abs": 0.3754, "pred_exc": -0.1427}, {"ticker": "DSY.PA", "name": "Dassault Systèmes", "pred_abs": 0.2699, "pred_exc": -0.2476}, {"ticker": "CA.PA", "name": "Carrefour", "pred_abs": 0.1957, "pred_exc": -0.3215}, {"ticker": "TTE.PA", "name": "TotalEnergies", "pred_abs": 0.0976, "pred_exc": -0.419}, {"ticker": "MC.PA", "name": "LVMH", "pred_abs": -0.0465, "pred_exc": -0.5624}, {"ticker": "SAN.PA", "name": "Sanofi", "pred_abs": -0.0516, "pred_exc": -0.5675}, {"ticker": "AC.PA", "name": "Accor", "pred_abs": -0.0759, "pred_exc": -0.5916}, {"ticker": "EDEN.PA", "name": "Edenred", "pred_abs": -0.1216, "pred_exc": -0.6372}, {"ticker": "STLAP.PA", "name": "Stellantis", "pred_abs": -0.206, "pred_exc": -0.7211}, {"ticker": "CAP.PA", "name": "Capgemini", "pred_abs": -0.565, "pred_exc": -1.0782}, {"ticker": "ENGI.PA", "name": "Engie", "pred_abs": -0.5961, "pred_exc": -1.1091}, {"ticker": "STMPA.PA", "name": "STMicro", "pred_abs": -0.7473, "pred_exc": -1.2596}, {"ticker": "TEP.PA", "name": "Teleperformance", "pred_abs": -0.8495, "pred_exc": -1.3612}];
+const FOLDS    = [{"id": 0, "ts": "2022-01-03", "te": "2022-07-01", "ic_s": -0.046592, "ic_p": -0.021294, "ls": -0.00598, "bi": 61}, {"id": 1, "ts": "2022-02-01", "te": "2022-08-01", "ic_s": 0.112936, "ic_p": 0.135385, "ls": 0.026219, "bi": 64}, {"id": 2, "ts": "2022-03-01", "te": "2022-09-01", "ic_s": 0.009798, "ic_p": 0.022143, "ls": 0.010227, "bi": 14}, {"id": 3, "ts": "2022-04-01", "te": "2022-09-30", "ic_s": -0.024185, "ic_p": -0.044657, "ls": -0.003067, "bi": 1}, {"id": 4, "ts": "2022-05-02", "te": "2022-11-01", "ic_s": 0.0872, "ic_p": 0.047182, "ls": 0.016844, "bi": 1}, {"id": 5, "ts": "2022-06-01", "te": "2022-12-01", "ic_s": 0.121453, "ic_p": 0.109173, "ls": 0.023195, "bi": 1}, {"id": 6, "ts": "2022-07-01", "te": "2022-12-30", "ic_s": 0.115115, "ic_p": 0.101447, "ls": 0.022209, "bi": 18}, {"id": 7, "ts": "2022-08-01", "te": "2023-02-01", "ic_s": 0.08725, "ic_p": 0.053069, "ls": 0.012638, "bi": 365}, {"id": 8, "ts": "2022-09-01", "te": "2023-03-01", "ic_s": 0.159314, "ic_p": 0.137894, "ls": 0.025735, "bi": 561}, {"id": 9, "ts": "2022-10-03", "te": "2023-03-31", "ic_s": 0.247641, "ic_p": 0.189331, "ls": 0.034089, "bi": 97}, {"id": 10, "ts": "2022-11-01", "te": "2023-05-01", "ic_s": 0.168219, "ic_p": 0.114874, "ls": 0.020344, "bi": 70}, {"id": 11, "ts": "2022-12-01", "te": "2023-06-01", "ic_s": 0.247561, "ic_p": 0.208489, "ls": 0.032523, "bi": 44}, {"id": 12, "ts": "2023-01-02", "te": "2023-06-30", "ic_s": 0.202738, "ic_p": 0.186053, "ls": 0.025159, "bi": 43}, {"id": 13, "ts": "2023-02-01", "te": "2023-08-01", "ic_s": 0.220613, "ic_p": 0.188848, "ls": 0.024036, "bi": 100}, {"id": 14, "ts": "2023-03-01", "te": "2023-09-01", "ic_s": 0.109952, "ic_p": 0.051043, "ls": 0.010636, "bi": 6}, {"id": 15, "ts": "2023-04-03", "te": "2023-09-29", "ic_s": 0.09851, "ic_p": 0.087377, "ls": 0.010011, "bi": 66}, {"id": 16, "ts": "2023-05-01", "te": "2023-11-01", "ic_s": 0.135959, "ic_p": 0.132592, "ls": 0.016162, "bi": 200}, {"id": 17, "ts": "2023-06-01", "te": "2023-12-01", "ic_s": 0.068175, "ic_p": 0.048066, "ls": 0.007651, "bi": 128}, {"id": 18, "ts": "2023-07-03", "te": "2023-12-29", "ic_s": 0.083638, "ic_p": 0.049053, "ls": 0.008574, "bi": 607}, {"id": 19, "ts": "2023-08-01", "te": "2024-02-01", "ic_s": 0.041903, "ic_p": 0.059305, "ls": 0.008962, "bi": 121}, {"id": 20, "ts": "2023-09-01", "te": "2024-03-01", "ic_s": 0.09271, "ic_p": 0.127357, "ls": 0.021355, "bi": 47}, {"id": 21, "ts": "2023-10-02", "te": "2024-04-01", "ic_s": 0.141423, "ic_p": 0.162621, "ls": 0.023231, "bi": 12}, {"id": 22, "ts": "2023-11-01", "te": "2024-05-01", "ic_s": 0.018716, "ic_p": 0.076052, "ls": 0.01062, "bi": 8}, {"id": 23, "ts": "2023-12-01", "te": "2024-05-31", "ic_s": 0.042501, "ic_p": 0.088761, "ls": 0.012911, "bi": 67}, {"id": 24, "ts": "2024-01-02", "te": "2024-07-01", "ic_s": 0.023962, "ic_p": 0.072028, "ls": 0.010612, "bi": 65}, {"id": 25, "ts": "2024-02-01", "te": "2024-08-01", "ic_s": -0.006869, "ic_p": 0.032952, "ls": -0.000125, "bi": 65}, {"id": 26, "ts": "2024-03-01", "te": "2024-08-30", "ic_s": -0.003784, "ic_p": 0.009172, "ls": -0.002166, "bi": 88}, {"id": 27, "ts": "2024-04-01", "te": "2024-10-01", "ic_s": 0.014234, "ic_p": -0.00077, "ls": -0.003808, "bi": 413}, {"id": 28, "ts": "2024-05-01", "te": "2024-11-01", "ic_s": 0.004381, "ic_p": -0.011919, "ls": -0.005161, "bi": 350}, {"id": 29, "ts": "2024-06-03", "te": "2024-11-29", "ic_s": 0.046236, "ic_p": 0.017613, "ls": -0.000373, "bi": 365}, {"id": 30, "ts": "2024-07-01", "te": "2024-12-31", "ic_s": 0.038936, "ic_p": 0.033041, "ls": 0.000991, "bi": 20}, {"id": 31, "ts": "2024-08-01", "te": "2025-01-31", "ic_s": 0.160629, "ic_p": 0.157996, "ls": 0.017617, "bi": 1}, {"id": 32, "ts": "2024-09-02", "te": "2025-02-28", "ic_s": 0.056205, "ic_p": -0.004095, "ls": 0.006434, "bi": 1}, {"id": 33, "ts": "2024-10-01", "te": "2025-04-01", "ic_s": -0.045725, "ic_p": -0.107377, "ls": -0.017244, "bi": 2}, {"id": 34, "ts": "2024-11-01", "te": "2025-05-01", "ic_s": 0.054284, "ic_p": 0.021084, "ls": -0.001068, "bi": 8}, {"id": 35, "ts": "2024-12-02", "te": "2025-05-30", "ic_s": 0.051175, "ic_p": 0.016686, "ls": 0.004722, "bi": 208}, {"id": 36, "ts": "2025-01-02", "te": "2025-07-01", "ic_s": 0.054233, "ic_p": 0.025741, "ls": 0.009634, "bi": 181}, {"id": 37, "ts": "2025-02-03", "te": "2025-08-01", "ic_s": -0.002031, "ic_p": -0.001036, "ls": 0.004015, "bi": 16}, {"id": 38, "ts": "2025-03-03", "te": "2025-09-01", "ic_s": 0.013894, "ic_p": 0.026232, "ls": 0.00272, "bi": 7}, {"id": 39, "ts": "2025-04-01", "te": "2025-10-01", "ic_s": 0.066934, "ic_p": 0.070887, "ls": 0.011165, "bi": 24}, {"id": 40, "ts": "2025-05-01", "te": "2025-10-31", "ic_s": 0.109812, "ic_p": 0.103437, "ls": 0.022123, "bi": 2}, {"id": 41, "ts": "2025-06-02", "te": "2025-12-01", "ic_s": 0.103624, "ic_p": 0.112597, "ls": 0.022186, "bi": 189}, {"id": 42, "ts": "2025-07-01", "te": "2025-12-02", "ic_s": 0.08153, "ic_p": 0.102133, "ls": 0.015597, "bi": 331}, {"id": 43, "ts": "2025-08-01", "te": "2025-12-02", "ic_s": 0.067729, "ic_p": 0.050114, "ls": 0.009948, "bi": 394}, {"id": 44, "ts": "2025-09-01", "te": "2025-12-02", "ic_s": 0.08969, "ic_p": 0.070046, "ls": 0.010584, "bi": 314}, {"id": 45, "ts": "2025-10-01", "te": "2025-12-02", "ic_s": 0.105897, "ic_p": 0.165705, "ls": 0.014697, "bi": 152}, {"id": 46, "ts": "2025-11-03", "te": "2025-12-02", "ic_s": 0.199019, "ic_p": 0.352124, "ls": 0.035913, "bi": 12}];
+const TOP_FEAT = [];
+const META     = {"med_hat": 0.5175, "n_top": 4, "universe": "cac40", "signal_date": "2025-12-31"};
+/* INJECT_END */
+</script>
+
+<script>
+// ── Sécurité : vérifie que les données sont bien chargées ──
+if (!RANKING || RANKING.length === 0) {
+  document.body.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#07080a;color:#f54646;font-family:'DM Mono',monospace;text-align:center;padding:40px">
+      <div>
+        <div style="font-size:32px;margin-bottom:16px">⚠</div>
+        <div style="font-size:14px;margin-bottom:8px">Aucune donnée injectée</div>
+        <div style="font-size:11px;color:#5a5e6e">Lance le dashboard via <strong style="color:#ff6b2b">python launch_dashboard.py</strong><br>et non en ouvrant le HTML directement.</div>
+      </div>
+    </div>`;
+  throw new Error("No data injected");
+}
+
+// ── Calcul KPIs depuis FOLDS ──
+const ic_s_vals = FOLDS.map(f => f.ic_s);
+const ic_p_vals = FOLDS.map(f => f.ic_p);
+const ls_vals   = FOLDS.map(f => f.ls);
+const mean = arr => arr.reduce((a,b) => a+b, 0) / arr.length;
+const std  = arr => { const m = mean(arr); return Math.sqrt(arr.reduce((a,b) => a+(b-m)**2, 0)/arr.length); };
+const maxIdx = arr => arr.indexOf(Math.max(...arr));
+
+const ic_s_mean = mean(ic_s_vals), ic_s_std = std(ic_s_vals);
+const ic_p_mean = mean(ic_p_vals), ic_p_std = std(ic_p_vals);
+const ls_mean   = mean(ls_vals),   ls_std   = std(ls_vals);
+const best_ic_fold = maxIdx(ic_s_vals);
+const best_ls_fold = maxIdx(ls_vals);
+
+// ── Remplir KPIs ──
+document.getElementById('kpi-ic-s').textContent       = ic_s_mean.toFixed(3);
+document.getElementById('kpi-ic-s-std').textContent   = `std = ${ic_s_std.toFixed(3)}`;
+document.getElementById('kpi-ic-p').textContent       = ic_p_mean.toFixed(3);
+document.getElementById('kpi-ic-p-std').textContent   = `std = ${ic_p_std.toFixed(3)}`;
+document.getElementById('kpi-ls').textContent         = `${(ls_mean*100).toFixed(2)}%`;
+document.getElementById('kpi-ls-std').textContent     = `std = ${(ls_std*100).toFixed(2)}%`;
+document.getElementById('kpi-ic-s-max').textContent   = Math.max(...ic_s_vals).toFixed(3);
+document.getElementById('kpi-ic-s-max-fold').textContent = `Fold ${FOLDS[best_ic_fold]?.id}`;
+document.getElementById('kpi-ls-max').textContent     = `${(Math.max(...ls_vals)*100).toFixed(2)}%`;
+document.getElementById('kpi-ls-max-fold').textContent   = `Fold ${FOLDS[best_ls_fold]?.id}`;
+document.getElementById('kpi-medhat').textContent     = `${META.med_hat >= 0 ? '+' : ''}${META.med_hat.toFixed(2)}%`;
+document.getElementById('footer-medhat').textContent  = `${META.med_hat >= 0 ? '+' : ''}${META.med_hat.toFixed(2)}%`;
+
+// ── Top 10% cards ──
+const n_top = META.n_top;
+const maxAbs = Math.max(...RANKING.map(r => Math.abs(r.pred_abs)));
+document.getElementById('top-tag').textContent = `${n_top} / ${RANKING.length} tickers · horizon 20j`;
+document.getElementById('ranking-tag').textContent = `${RANKING.length} tickers · signal ${META.signal_date}`;
+document.getElementById('fold-tag').textContent = `${FOLDS.length} folds`;
+
+const topCards = document.getElementById('topCards');
+RANKING.slice(0, n_top).forEach((r, i) => {
+  const pct = Math.min(100, Math.abs(r.pred_abs) / maxAbs * 100);
+  topCards.innerHTML += `
+    <div class="ticker-card" style="animation-delay:${(i+1)*0.1}s">
+      <div class="card-rank">#${i+1}</div>
+      <div class="card-ticker"><a href="https://finance.yahoo.com/quote/${r.ticker}/" target="_blank" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.15);transition:border-color .2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)'">${r.ticker}</a></div>
+      <div class="card-name">${r.name || ''}</div>
+      <div class="card-metrics">
+        <div>
+          <div class="card-metric-label">Pred. abs.</div>
+          <div class="card-metric-value green">+${r.pred_abs.toFixed(2)}%</div>
+        </div>
+        <div>
+          <div class="card-metric-label">Pred. excès</div>
+          <div class="card-metric-value blue">${r.pred_exc >= 0 ? '+' : ''}${r.pred_exc.toFixed(2)}%</div>
+        </div>
+      </div>
+      <div class="bar-container"><div class="bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+});
+
+// ── Chart defaults ──
+Chart.defaults.color = '#5a5e6e';
+Chart.defaults.borderColor = '#1e2028';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 10;
+
+// Chart 1 — Full ranking
+new Chart(document.getElementById('rankingChart'), {
+  type: 'bar',
+  data: {
+    labels: RANKING.map(r => r.ticker),
+    datasets: [{
+      data: RANKING.map(r => r.pred_abs),
+      backgroundColor: RANKING.map((r,i) => i < n_top ? 'rgba(255,107,43,.9)' : r.pred_abs >= 0 ? 'rgba(77,166,255,.35)' : 'rgba(245,70,70,.35)'),
+      borderColor:     RANKING.map((r,i) => i < n_top ? '#ff6b2b'              : r.pred_abs >= 0 ? '#4da6ff'              : '#f54646'),
+      borderWidth: RANKING.map((_,i) => i < n_top ? 1.5 : 0.5),
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.raw.toFixed(2)}%` } }
+    },
+    scales: {
+      x: { ticks: { font:{size:9}, maxRotation:45 }, grid: { color:'rgba(30,32,40,.8)' } },
+      y: { grid: { color:'rgba(30,32,40,.8)' }, ticks: { callback: v => v.toFixed(1)+'%' } }
+    }
+  }
+});
+
+// Chart 2 — IC par fold
+new Chart(document.getElementById('icChart'), {
+  type: 'line',
+  data: {
+    labels: FOLDS.map(f => `F${f.id}`),
+    datasets: [
+      { label:'IC Spearman', data: FOLDS.map(f=>f.ic_s), borderColor:'#ff6b2b', backgroundColor:'rgba(255,107,43,.08)', fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:'#ff6b2b' },
+      { label:'IC Pearson',  data: FOLDS.map(f=>f.ic_p), borderColor:'#4da6ff', backgroundColor:'rgba(77,166,255,.05)', fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:'#4da6ff', borderDash:[4,3] }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color:'#5a5e6e', boxWidth:12 } } },
+    scales: {
+      x: { grid:{color:'rgba(30,32,40,.8)'} },
+      y: { grid:{color:'rgba(30,32,40,.8)'}, ticks:{callback:v=>v.toFixed(2)} }
+    }
+  }
+});
+
+// Chart 3 — LS Spread
+new Chart(document.getElementById('lsChart'), {
+  type: 'bar',
+  data: {
+    labels: FOLDS.map(f => `F${f.id}`),
+    datasets: [{
+      data: FOLDS.map(f => (f.ls*100).toFixed(3)),
+      backgroundColor: FOLDS.map(f => f.ls > 0.02 ? 'rgba(255,107,43,.8)' : 'rgba(77,166,255,.5)'),
+      borderColor:     FOLDS.map(f => f.ls > 0.02 ? '#ff6b2b'             : '#4da6ff'),
+      borderWidth:1, borderRadius:2,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend:{display:false} },
+    scales: {
+      x: { grid:{color:'rgba(30,32,40,.8)'} },
+      y: { grid:{color:'rgba(30,32,40,.8)'}, ticks:{callback:v=>v.toFixed(2)+'%'} }
+    }
+  }
+});
+
+// Chart 4 — Scatter
+new Chart(document.getElementById('scatterChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { label:'Top 10%', data:RANKING.slice(0,n_top).map(r=>({x:r.pred_abs,y:r.pred_exc})), backgroundColor:'rgba(255,107,43,.9)', borderColor:'#ff6b2b', pointRadius:7, pointHoverRadius:9 },
+      { label:'Reste',   data:RANKING.slice(n_top).map(r=>({x:r.pred_abs,y:r.pred_exc})),   backgroundColor:'rgba(77,166,255,.3)', borderColor:'#4da6ff', pointRadius:4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend:{ labels:{color:'#5a5e6e',boxWidth:12} } },
+    scales: {
+      x: { title:{display:true,text:'Pred. abs. (%)',color:'#5a5e6e'}, grid:{color:'rgba(30,32,40,.8)'} },
+      y: { title:{display:true,text:'Pred. excès (%)',color:'#5a5e6e'}, grid:{color:'rgba(30,32,40,.8)'} }
+    }
+  }
+});
+
+// Chart 5 — Features
+new Chart(document.getElementById('featChart'), {
+  type: 'bar',
+  data: {
+    labels: TOP_FEAT.map(f=>f.name),
+    datasets: [{
+      data: TOP_FEAT.map(f=>f.count),
+      backgroundColor: TOP_FEAT.map((_,i)=> i<5 ? 'rgba(255,107,43,.8)' : 'rgba(77,166,255,.4)'),
+      borderColor:     TOP_FEAT.map((_,i)=> i<5 ? '#ff6b2b'             : '#4da6ff'),
+      borderWidth:1, borderRadius:2,
+    }]
+  },
+  options: {
+    indexAxis:'y', responsive:true,
+    plugins: { legend:{display:false} },
+    scales: {
+      x: { grid:{color:'rgba(30,32,40,.8)'}, ticks:{stepSize:1} },
+      y: { ticks:{font:{size:9}}, grid:{color:'rgba(30,32,40,.8)'} }
+    }
+  }
+});
+
+// ── Full ranking table ──
+const tbody = document.getElementById('tableBody');
+RANKING.forEach((r, i) => {
+  const isTop = i < n_top;
+  const bw = Math.min(100, Math.abs(r.pred_abs) / maxAbs * 100);
+  const bc = r.pred_abs >= 0 ? '#ff6b2b' : '#f54646';
+  tbody.innerHTML += `
+    <tr class="${isTop?'top10':''}" style="animation-delay:${i*0.018}s">
+      <td class="rank-num">${String(i+1).padStart(2,'0')}</td>
+      <td><a href="https://finance.yahoo.com/quote/${r.ticker}/" target="_blank" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.1);transition:border-color .2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">${r.ticker}</a>${isTop?' <span style="color:var(--accent);font-size:9px;margin-left:4px">★ LONG</span>':''}</td>
+      <td class="${r.pred_abs>=0?'val-positive':'val-negative'}">${r.pred_abs>=0?'+':''}${r.pred_abs.toFixed(2)}%
+        <span class="signal-bar" style="width:${bw}px;background:${bc};opacity:.7"></span></td>
+      <td class="${r.pred_exc>=0?'val-neutral':'val-negative'}">${r.pred_exc>=0?'+':''}${r.pred_exc.toFixed(2)}%</td>
+      <td style="color:var(--muted)">${r.name||''}</td>
+    </tr>`;
+});
+
+// ── Fold table ──
+const fbody = document.getElementById('foldBody');
+FOLDS.forEach(f => {
+  fbody.innerHTML += `
+    <tr>
+      <td class="rank-num">F${f.id}</td>
+      <td>${f.ts}</td><td>${f.te}</td>
+      <td class="${f.ic_s>0.1?'val-positive':f.ic_s<0?'val-negative':'val-neutral'}">${f.ic_s.toFixed(4)}</td>
+      <td class="${f.ic_p>0.1?'val-positive':f.ic_p<0?'val-negative':'val-neutral'}">${f.ic_p.toFixed(4)}</td>
+      <td class="${f.ls>0.02?'val-positive':'val-neutral'}">${(f.ls*100).toFixed(3)}%</td>
+      <td style="color:var(--muted)">${f.bi}</td>
+    </tr>`;
+});
+</script>
+</body>
+</html>
