@@ -52,6 +52,7 @@ import yfinance as yf
 # ═══════════════════════════════════════════════════════════════════════════════
 
 BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = BASE_DIR / "DataBase"
 START_DEFAULT = "2000-01-01"
 
 INDEX_CONFIG = {
@@ -64,7 +65,7 @@ INDEX_CONFIG = {
         "alt_db": "spx_data.db",
         "market_ticker": "^GSPC",
         "dot_to_dash": True,
-        "model_start": "2022-01-01",  # date de début modèle — _load_px charge à partir de model_start - 280j
+        "model_start": "2015-01-01",  # date de début modèle — _load_px charge à partir de model_start - 280j
         "macro_vix": "^VIX",           # CBOE VIX
         "macro_yield_10y": "^TNX",     # 10-Year Treasury Yield
         "macro_yield_3m": "^IRX",      # 13-Week T-Bill Yield
@@ -77,7 +78,7 @@ INDEX_CONFIG = {
         "db": "cac40_data.db",
         "market_ticker": "^FCHI",
         "dot_to_dash": False,
-        "model_start": "2022-01-01",
+        "model_start": "2015-01-01",
         "macro_vix": "^VIX",           # US VIX (proxy global — ^V2X cassé sur YF)
         "macro_yield_10y": "^TNX",     # US 10Y (proxy global)
         "macro_yield_3m": "^IRX",      # US 3M (proxy global)
@@ -90,7 +91,7 @@ INDEX_CONFIG = {
         "db": "dax_data.db",
         "market_ticker": "^GDAXI",
         "dot_to_dash": False,
-        "model_start": "2022-01-01",
+        "model_start": "2015-01-01",
         "macro_vix": "^VIX",           # US VIX (proxy global — ^V2X cassé sur YF)
         "macro_yield_10y": "^TNX",     # US 10Y (proxy global)
         "macro_yield_3m": "^IRX",      # US 3M (proxy global)
@@ -887,6 +888,48 @@ def _build_interaction_features(feat: pd.DataFrame) -> pd.DataFrame:
     return feat
 
 
+def _build_cs_dispersion_features(feat: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cross-sectional dispersion : écart-type des rendements journaliers
+    entre tickers à chaque date. C'est un proxy de régime de marché —
+    dispersion haute = marché différencie (facteurs marchent),
+    dispersion basse = corrélation de marché (facteurs souffrent).
+
+    Features créées :
+      - cs_disp_20   : moyenne mobile 20j de la dispersion CS journalière
+      - cs_disp_60   : moyenne mobile 60j de la dispersion CS journalière
+      - cs_disp_ratio: cs_disp_20 / cs_disp_60 (accélération/décélération)
+
+    Toutes sont broadcast (même valeur pour tous les tickers à une date).
+    """
+    if "ret_1" not in feat.columns:
+        print("  [CS Dispersion] ret_1 absent — features ignorées.")
+        return feat
+
+    feat = feat.copy()
+    feat["Date"] = pd.to_datetime(feat["Date"])
+
+    # 1. Dispersion CS journalière = écart-type cross-sectionnel de ret_1 par date
+    cs_std = feat.groupby("Date", sort=True)["ret_1"].std().rename("_cs_std_raw")
+
+    # 2. Moyennes mobiles de la dispersion
+    cs_std_df = cs_std.reset_index()
+    cs_std_df = cs_std_df.sort_values("Date")
+    cs_std_df["cs_disp_20"] = cs_std_df["_cs_std_raw"].rolling(20, min_periods=10).mean()
+    cs_std_df["cs_disp_60"] = cs_std_df["_cs_std_raw"].rolling(60, min_periods=30).mean()
+    cs_std_df["cs_disp_ratio"] = (
+        cs_std_df["cs_disp_20"] / cs_std_df["cs_disp_60"].replace(0, np.nan)
+    ).clip(0.3, 3.0)
+
+    # 3. Merge broadcast sur Date
+    cs_cols = ["Date", "cs_disp_20", "cs_disp_60", "cs_disp_ratio"]
+    feat = feat.merge(cs_std_df[cs_cols], on="Date", how="left")
+
+    n_ok = feat[["cs_disp_20", "cs_disp_60", "cs_disp_ratio"]].notna().any(axis=0).sum()
+    print(f"  [CS Dispersion] +3 features ({n_ok} non-vides)")
+    return feat
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 8 — YAHOO HISTORY FEATURES
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1576,6 +1619,9 @@ def compute_features(index: str = "all", force: bool = False):
 
         # Features d'interaction
         feat = _build_interaction_features(feat)
+
+        # Features de dispersion cross-sectionnelle (proxy régime)
+        feat = _build_cs_dispersion_features(feat)
 
         ef = _calc_earnings_feat(db)
         if not ef.empty:
