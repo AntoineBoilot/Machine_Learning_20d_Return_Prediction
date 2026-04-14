@@ -129,6 +129,83 @@
     background:rgba(70,232,245,.1); color:var(--accent2);
     border:1px solid rgba(70,232,245,.25); padding:3px 8px; border-radius:2px; margin-left:8px;
   }
+
+  /* ── AI Panel (Gemini) ── */
+  .ai-panel {
+    background: linear-gradient(135deg, rgba(180,130,245,.06) 0%, rgba(70,232,245,.025) 100%);
+    border: 1px solid rgba(180,130,245,.25);
+    border-left: 3px solid #b482f5;
+    padding: 24px 28px; margin: 32px 0 40px;
+    position: relative; animation: fadeUp .5s ease both;
+  }
+  .ai-panel-head { display:flex; align-items:center; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .ai-badge {
+    font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+    background:rgba(180,130,245,.15); color:#d4b4ff;
+    border:1px solid rgba(180,130,245,.35); padding:4px 10px; border-radius:2px;
+  }
+  .ai-panel-title { font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text); }
+  .ai-panel-meta { margin-left:auto; font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+  .ai-panel-actions { display:flex; align-items:center; gap:8px; margin-left:auto; }
+  .ai-copy-btn {
+    appearance:none; border:1px solid rgba(180,130,245,.35); background:rgba(180,130,245,.1); color:#d4b4ff;
+    font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase;
+    padding:7px 10px; border-radius:2px; cursor:pointer; transition:background .2s,border-color .2s,color .2s,opacity .2s;
+  }
+  .ai-copy-btn:hover { background:rgba(180,130,245,.16); border-color:rgba(180,130,245,.5); }
+  .ai-copy-btn:disabled { opacity:.45; cursor:not-allowed; }
+  .ai-copy-feedback { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); }
+  .ai-section-label {
+    font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase;
+    color:#b482f5; margin: 18px 0 8px; font-weight:600;
+  }
+  .ai-text { font-size:13px; line-height:1.65; color:var(--text); }
+  .ai-picks-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+  .ai-pick-card {
+    background:rgba(15,17,21,.65); border:1px solid var(--border); padding:12px 14px;
+    border-left:2px solid #b482f5; transition:border-color .2s, transform .2s;
+  }
+  .ai-pick-card:hover { transform:translateY(-1px); }
+  .ai-pick-card.high   { border-left-color:#c8f546; }
+  .ai-pick-card.medium { border-left-color:#46e8f5; }
+  .ai-pick-card.low    { border-left-color:#5a5e6e; }
+  .ai-pick-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+  .ai-pick-ticker { font-size:15px; font-weight:800; letter-spacing:-.01em; }
+  .ai-pick-ticker a { color:#d4b4ff; text-decoration:none; border-bottom:1px solid rgba(212,180,255,.25); transition:border-color .2s; }
+  .ai-pick-ticker a:hover { border-bottom-color:#d4b4ff; }
+  .ai-pick-action {
+    font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase;
+    padding:2px 7px; border-radius:2px; font-weight:600;
+  }
+  .ai-pick-action.LONG    { background:rgba(200,245,70,.15); color:#c8f546; border:1px solid rgba(200,245,70,.35); }
+  .ai-pick-action.SHORT   { background:rgba(245,70,70,.15);  color:#f54646; border:1px solid rgba(245,70,70,.35); }
+  .ai-pick-action.AVOID   { background:rgba(245,70,70,.15);  color:#f54646; border:1px solid rgba(245,70,70,.35); }
+  .ai-pick-action.WATCH   { background:rgba(245,168,70,.15); color:#f5a846; border:1px solid rgba(245,168,70,.35); }
+  .ai-pick-action.NEUTRAL { background:rgba(70,232,245,.15); color:#46e8f5; border:1px solid rgba(70,232,245,.35); }
+  .ai-pick-conviction { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); margin-left:auto; }
+  .ai-pick-rationale { font-size:11.5px; line-height:1.55; color:var(--muted); }
+  .ai-contrarian-item {
+    padding:10px 14px; background:rgba(15,17,21,.55); border-left:2px solid var(--accent3);
+    margin-bottom:8px; font-size:12px; line-height:1.55;
+  }
+  .ai-contrarian-item strong { color:var(--accent3); font-weight:700; }
+  .ai-contrarian-item em     { color:#d4b4ff; font-style:normal; font-family:'DM Mono',monospace; font-size:10px; padding-left:6px; }
+  .ai-risks-list { list-style:none; padding:0; margin:4px 0 0; }
+  .ai-risks-list li {
+    padding:7px 0 7px 20px; position:relative; font-size:12.5px; line-height:1.55; color:var(--text);
+    border-bottom:1px solid rgba(180,130,245,.08);
+  }
+  .ai-risks-list li:last-child { border-bottom:none; }
+  .ai-risks-list li::before { content:'▹'; position:absolute; left:2px; color:#b482f5; font-size:13px; }
+  .ai-note {
+    font-family:'DM Mono',monospace; font-size:9.5px; color:var(--muted);
+    margin-top:18px; padding-top:12px; border-top:1px solid rgba(180,130,245,.15);
+    line-height:1.55;
+  }
+  .ai-panel.empty {
+    background:rgba(15,17,21,.5); border-color:var(--border); border-left-color:var(--muted);
+  }
+  .ai-panel.empty .ai-badge { background:rgba(90,94,110,.15); color:var(--muted); border-color:rgba(90,94,110,.25); }
 </style>
 </head>
 <body>
@@ -146,7 +223,7 @@
         <strong>Features</strong> 34<br>
         <strong>Folds</strong> 8 · Walk-forward rolling<br>
         <strong>Top 10%</strong> 4 tickers
-        <span class="update-badge">↻ généré 2026-04-14 13:45</span>
+        <span class="update-badge">↻ généré 2026-04-14 15:27</span>
       </div>
     </div>
   </header>
@@ -181,6 +258,34 @@
       <div class="kpi-label">med_hat (médiane)</div>
       <div class="kpi-value warn" id="kpi-medhat">—</div>
       <div class="kpi-sub">rolling 60j de target_20d</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ENCART IA (Gemini) ═══════════ -->
+  <div id="aiPanel" class="ai-panel" style="display:none">
+    <div class="ai-panel-head">
+      <div class="ai-badge">✧ Analyse IA · Gemini</div>
+      <div class="ai-panel-title">Point de vue fondamental & business</div>
+      <div class="ai-panel-actions">
+        <div class="ai-panel-meta" id="ai-meta">—</div>
+        <button type="button" class="ai-copy-btn" id="ai-copy-prompt">Copier le prompt</button>
+        <span class="ai-copy-feedback" id="ai-copy-feedback" style="display:none"></span>
+      </div>
+    </div>
+    <div class="ai-note" id="ai-status-banner" style="display:none"></div>
+    <div class="ai-section-label">Contexte marché</div>
+    <div class="ai-text" id="ai-market-context">—</div>
+    <div class="ai-section-label">Lecture du signal ML</div>
+    <div class="ai-text" id="ai-model-take">—</div>
+    <div class="ai-section-label">Top picks IA</div>
+    <div class="ai-picks-grid" id="ai-top-picks"></div>
+    <div class="ai-section-label" id="ai-contrarian-label" style="display:none">Désaccords avec le modèle ML</div>
+    <div id="ai-contrarian"></div>
+    <div class="ai-section-label">Risques à surveiller · horizon 20j</div>
+    <ul class="ai-risks-list" id="ai-risks"></ul>
+    <div class="ai-note">
+      ⓘ Analyse qualitative générée par IA, en complément du modèle quantitatif — non contractuelle.
+      L'IA peut se tromper ou s'appuyer sur des informations datées : vérifier avant toute décision.
     </div>
   </div>
 
@@ -253,7 +358,7 @@
 
   <footer>
     <span>LightGBM · Walk-Forward · cac40 · 53 features</span>
-    <span>Signal date: 2026-04-13 · med_hat = <span id="footer-medhat">—</span></span>
+    <span>Signal date: 2026-04-14 · med_hat = <span id="footer-medhat">—</span></span>
   </footer>
 
 </div>
@@ -263,10 +368,13 @@
      ═══════════════════════════════════════════════ -->
 <script id="injected-data">
 /* INJECT_START */
-const RANKING  = [{"ticker": "ACA.PA", "name": "Crédit Agricole", "pred_abs": 1.3053, "pred_exc": 2.3699}, {"ticker": "LR.PA", "name": "Legrand", "pred_abs": 1.2202, "pred_exc": 2.2839}, {"ticker": "BN.PA", "name": "Danone", "pred_abs": 1.1564, "pred_exc": 2.2194}, {"ticker": "KER.PA", "name": "Kering", "pred_abs": 0.9599, "pred_exc": 2.0208}, {"ticker": "AC.PA", "name": "Accor", "pred_abs": 0.8823, "pred_exc": 1.9424}, {"ticker": "CS.PA", "name": "AXA", "pred_abs": 0.5763, "pred_exc": 1.6332}, {"ticker": "EN.PA", "name": "Bouygues", "pred_abs": 0.0801, "pred_exc": 1.1318}, {"ticker": "HO.PA", "name": "Thales", "pred_abs": -0.0342, "pred_exc": 1.0163}, {"ticker": "STMPA.PA", "name": "STMicro", "pred_abs": -0.1946, "pred_exc": 0.8542}, {"ticker": "AI.PA", "name": "Air Liquide", "pred_abs": -0.2026, "pred_exc": 0.8461}, {"ticker": "ORA.PA", "name": "Orange", "pred_abs": -0.2075, "pred_exc": 0.8411}, {"ticker": "MC.PA", "name": "LVMH", "pred_abs": -0.343, "pred_exc": 0.7042}, {"ticker": "SAN.PA", "name": "Sanofi", "pred_abs": -0.3472, "pred_exc": 0.7}, {"ticker": "VIE.PA", "name": "Veolia", "pred_abs": -0.8326, "pred_exc": 0.2095}, {"ticker": "CA.PA", "name": "Carrefour", "pred_abs": -0.8466, "pred_exc": 0.1953}, {"ticker": "BVI.PA", "name": "Bureau Veritas", "pred_abs": -0.9027, "pred_exc": 0.1386}, {"ticker": "BNP.PA", "name": "BNP Paribas", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "ML.PA", "name": "Michelin", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "TTE.PA", "name": "TotalEnergies", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "AIR.PA", "name": "Airbus", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "DSY.PA", "name": "Dassault Systèmes", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "URW.PA", "name": "Unibail", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "ENGI.PA", "name": "Engie", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "ERF.PA", "name": "Eurofins", "pred_abs": -1.0399, "pred_exc": 0.0}, {"ticker": "GLE.PA", "name": "Soc. Générale", "pred_abs": -1.1267, "pred_exc": -0.0877}, {"ticker": "OR.PA", "name": "L'Oréal", "pred_abs": -1.2328, "pred_exc": -0.1949}, {"ticker": "SAF.PA", "name": "Safran", "pred_abs": -1.4262, "pred_exc": -0.3904}, {"ticker": "RMS.PA", "name": "Hermès", "pred_abs": -1.7319, "pred_exc": -0.6993}, {"ticker": "RI.PA", "name": "Pernod Ricard", "pred_abs": -1.7524, "pred_exc": -0.72}, {"ticker": "PUB.PA", "name": "Publicis", "pred_abs": -1.8653, "pred_exc": -0.8341}, {"ticker": "MT.AS", "name": "ArcelorMittal", "pred_abs": -1.8702, "pred_exc": -0.839}, {"ticker": "DG.PA", "name": "Vinci", "pred_abs": -2.1349, "pred_exc": -1.1065}, {"ticker": "TEP.PA", "name": "Teleperformance", "pred_abs": -3.0765, "pred_exc": -2.058}, {"ticker": "RNO.PA", "name": "Renault", "pred_abs": -3.1257, "pred_exc": -2.1077}, {"ticker": "SU.PA", "name": "Schneider", "pred_abs": -3.2792, "pred_exc": -2.2628}, {"ticker": "SGO.PA", "name": "Saint-Gobain", "pred_abs": -3.2848, "pred_exc": -2.2685}, {"ticker": "STLAP.PA", "name": "Stellantis", "pred_abs": -3.7289, "pred_exc": -2.7173}, {"ticker": "EL.PA", "name": "EssilorLuxottica", "pred_abs": -4.1215, "pred_exc": -3.114}, {"ticker": "EDEN.PA", "name": "Edenred", "pred_abs": -4.7311, "pred_exc": -3.73}, {"ticker": "CAP.PA", "name": "Capgemini", "pred_abs": -5.0861, "pred_exc": -4.0888}];
-const FOLDS    = [{"id": 0, "ts": "2025-01-02", "te": "2025-04-01", "ic_s": 0.22327, "ic_p": 0.274076, "ls": 0.068667, "bi": 51}, {"id": 1, "ts": "2025-02-03", "te": "2025-04-30", "ic_s": 0.29431, "ic_p": 0.367135, "ls": 0.101889, "bi": 50}, {"id": 2, "ts": "2025-03-03", "te": "2025-05-30", "ic_s": 0.184177, "ic_p": 0.225789, "ls": 0.059889, "bi": 50}, {"id": 3, "ts": "2025-04-01", "te": "2025-07-01", "ic_s": 0.104679, "ic_p": 0.061298, "ls": 0.022473, "bi": 80}, {"id": 4, "ts": "2025-05-02", "te": "2025-08-01", "ic_s": 0.106851, "ic_p": 0.064193, "ls": 0.005611, "bi": 183}, {"id": 5, "ts": "2025-06-02", "te": "2025-09-01", "ic_s": 0.25639, "ic_p": 0.245686, "ls": 0.04723, "bi": 354}, {"id": 6, "ts": "2025-07-01", "te": "2025-09-01", "ic_s": 0.257844, "ic_p": 0.284449, "ls": 0.063477, "bi": 234}, {"id": 7, "ts": "2025-08-01", "te": "2025-09-01", "ic_s": 0.310396, "ic_p": 0.349421, "ls": 0.076382, "bi": 243}];
-const TOP_FEAT = [{"name": "yf_corr_idx_60", "count": 8}, {"name": "yf_beta_idx_252", "count": 8}, {"name": "yf_mom_12m", "count": 8}, {"name": "macro_term_spread", "count": 8}, {"name": "yf_mom_6m", "count": 8}, {"name": "rv_ratio_20_60", "count": 8}, {"name": "cs_disp_60", "count": 8}, {"name": "yf_trend_consistency", "count": 8}, {"name": "yf_vol_ratio", "count": 8}, {"name": "delta_5d_slope_logp_60", "count": 8}, {"name": "macro_vix", "count": 7}, {"name": "consecutive_beats", "count": 6}, {"name": "mom20_div_mom120", "count": 6}, {"name": "slope_logp_20", "count": 6}, {"name": "delta_10d_beta_60", "count": 5}];
-const META     = {"med_hat": -1.0454, "n_top": 4, "universe": "cac40", "signal_date": "2026-04-13"};
+const RANKING     = [{"ticker": "ACA.PA", "name": "Crédit Agricole", "pred_abs": 1.6279, "pred_exc": 2.6076}, {"ticker": "LR.PA", "name": "Legrand", "pred_abs": 0.9548, "pred_exc": 1.928}, {"ticker": "KER.PA", "name": "Kering", "pred_abs": 0.529, "pred_exc": 1.4981}, {"ticker": "SAN.PA", "name": "Sanofi", "pred_abs": 0.212, "pred_exc": 1.178}, {"ticker": "CS.PA", "name": "AXA", "pred_abs": 0.1822, "pred_exc": 1.1479}, {"ticker": "BN.PA", "name": "Danone", "pred_abs": 0.1692, "pred_exc": 1.1348}, {"ticker": "AI.PA", "name": "Air Liquide", "pred_abs": 0.1652, "pred_exc": 1.1307}, {"ticker": "AC.PA", "name": "Accor", "pred_abs": 0.0253, "pred_exc": 0.9895}, {"ticker": "MC.PA", "name": "LVMH", "pred_abs": -0.2233, "pred_exc": 0.7385}, {"ticker": "ORA.PA", "name": "Orange", "pred_abs": -0.6473, "pred_exc": 0.3105}, {"ticker": "HO.PA", "name": "Thales", "pred_abs": -0.7223, "pred_exc": 0.2347}, {"ticker": "STMPA.PA", "name": "STMicro", "pred_abs": -0.8073, "pred_exc": 0.1489}, {"ticker": "SAF.PA", "name": "Safran", "pred_abs": -0.8487, "pred_exc": 0.1071}, {"ticker": "BVI.PA", "name": "Bureau Veritas", "pred_abs": -0.8516, "pred_exc": 0.1041}, {"ticker": "OR.PA", "name": "L'Oréal", "pred_abs": -0.8526, "pred_exc": 0.1031}, {"ticker": "EN.PA", "name": "Bouygues", "pred_abs": -0.9429, "pred_exc": 0.012}, {"ticker": "ML.PA", "name": "Michelin", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "ERF.PA", "name": "Eurofins", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "BNP.PA", "name": "BNP Paribas", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "AIR.PA", "name": "Airbus", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "TTE.PA", "name": "TotalEnergies", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "URW.PA", "name": "Unibail", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "ENGI.PA", "name": "Engie", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "DSY.PA", "name": "Dassault Systèmes", "pred_abs": -0.9548, "pred_exc": 0.0}, {"ticker": "RI.PA", "name": "Pernod Ricard", "pred_abs": -1.0568, "pred_exc": -0.103}, {"ticker": "GLE.PA", "name": "Soc. Générale", "pred_abs": -1.1622, "pred_exc": -0.2094}, {"ticker": "VIE.PA", "name": "Veolia", "pred_abs": -1.1887, "pred_exc": -0.2362}, {"ticker": "EL.PA", "name": "EssilorLuxottica", "pred_abs": -1.192, "pred_exc": -0.2395}, {"ticker": "PUB.PA", "name": "Publicis", "pred_abs": -1.2613, "pred_exc": -0.3095}, {"ticker": "DG.PA", "name": "Vinci", "pred_abs": -1.3036, "pred_exc": -0.3522}, {"ticker": "SGO.PA", "name": "Saint-Gobain", "pred_abs": -1.3089, "pred_exc": -0.3575}, {"ticker": "CA.PA", "name": "Carrefour", "pred_abs": -1.3174, "pred_exc": -0.3661}, {"ticker": "TEP.PA", "name": "Teleperformance", "pred_abs": -1.6121, "pred_exc": -0.6637}, {"ticker": "RMS.PA", "name": "Hermès", "pred_abs": -1.6809, "pred_exc": -0.7331}, {"ticker": "MT.AS", "name": "ArcelorMittal", "pred_abs": -2.0622, "pred_exc": -1.1181}, {"ticker": "RNO.PA", "name": "Renault", "pred_abs": -2.3381, "pred_exc": -1.3967}, {"ticker": "SU.PA", "name": "Schneider", "pred_abs": -2.8691, "pred_exc": -1.9328}, {"ticker": "STLAP.PA", "name": "Stellantis", "pred_abs": -3.3408, "pred_exc": -2.409}, {"ticker": "CAP.PA", "name": "Capgemini", "pred_abs": -3.7181, "pred_exc": -2.7899}, {"ticker": "EDEN.PA", "name": "Edenred", "pred_abs": -4.5183, "pred_exc": -3.5979}];
+const FOLDS       = [{"id": 0, "ts": "2025-01-02", "te": "2025-04-01", "ic_s": 0.22327, "ic_p": 0.274076, "ls": 0.068667, "bi": 51}, {"id": 1, "ts": "2025-02-03", "te": "2025-04-30", "ic_s": 0.29431, "ic_p": 0.367135, "ls": 0.101889, "bi": 50}, {"id": 2, "ts": "2025-03-03", "te": "2025-05-30", "ic_s": 0.184177, "ic_p": 0.225789, "ls": 0.059889, "bi": 50}, {"id": 3, "ts": "2025-04-01", "te": "2025-07-01", "ic_s": 0.104679, "ic_p": 0.061298, "ls": 0.022473, "bi": 80}, {"id": 4, "ts": "2025-05-02", "te": "2025-08-01", "ic_s": 0.106851, "ic_p": 0.064193, "ls": 0.005611, "bi": 183}, {"id": 5, "ts": "2025-06-02", "te": "2025-09-01", "ic_s": 0.25639, "ic_p": 0.245686, "ls": 0.04723, "bi": 354}, {"id": 6, "ts": "2025-07-01", "te": "2025-09-01", "ic_s": 0.257844, "ic_p": 0.284449, "ls": 0.063477, "bi": 234}, {"id": 7, "ts": "2025-08-01", "te": "2025-09-01", "ic_s": 0.310396, "ic_p": 0.349421, "ls": 0.076382, "bi": 243}];
+const TOP_FEAT    = [{"name": "yf_corr_idx_60", "count": 8}, {"name": "yf_beta_idx_252", "count": 8}, {"name": "yf_mom_12m", "count": 8}, {"name": "macro_term_spread", "count": 8}, {"name": "yf_mom_6m", "count": 8}, {"name": "rv_ratio_20_60", "count": 8}, {"name": "cs_disp_60", "count": 8}, {"name": "yf_trend_consistency", "count": 8}, {"name": "yf_vol_ratio", "count": 8}, {"name": "delta_5d_slope_logp_60", "count": 8}, {"name": "macro_vix", "count": 7}, {"name": "consecutive_beats", "count": 6}, {"name": "mom20_div_mom120", "count": 6}, {"name": "slope_logp_20", "count": 6}, {"name": "delta_10d_beta_60", "count": 5}];
+const META        = {"med_hat": -0.9594, "n_top": 4, "universe": "cac40", "signal_date": "2026-04-14"};
+const AI_PROMPT_B64 = "eyJwcm92aWRlciI6ICJnZW1pbmkiLCAibW9kZWwiOiAiZ2VtaW5pLTIuNS1mbGFzaCIsICJzaWduYWxfZGF0ZSI6ICIyMDI2LTA0LTE0IiwgInN5c3RlbV9pbnN0cnVjdGlvbiI6ICJUdSBlcyB1biBhbmFseXN0ZSBmaW5hbmNpZXIgc2VuaW9yIChidXktc2lkZSkuXG5cblVuIG1vZMOobGUgZGUgTWFjaGluZSBMZWFybmluZyAoTGlnaHRHQk0gd2Fsay1mb3J3YXJkKSB2aWVudCBkZSBwcm9kdWlyZSBkZXMgcHLDqWRpY3Rpb25zIHF1YW50aXRhdGl2ZXMgZGUgcmVuZGVtZW50IMOgIDIwIGpvdXJzIGRlIGJvdXJzZSAofjEgbW9pcyBjYWxlbmRhaXJlKSBzdXIgdW4gdW5pdmVycyBkJ2FjdGlvbnMuIENlcyBwcsOpZGljdGlvbnMgcydhcHB1aWVudCBzdXIgZGVzIGZlYXR1cmVzIHRlY2huaXF1ZXMsIGZvbmRhbWVudGFsZXMsIG1hY3JvIGV0IG9wdGlvbnMuIEVsbGVzIHNvbnQgaW5mb3JtYXRpdmVzIG1haXMgaW1wYXJmYWl0ZXMgOiBlbGxlcyBpZ25vcmVudCBsYXJnZW1lbnQgbCdhY3R1YWxpdMOpIHLDqWNlbnRlLCBsZXMgw6l2w6luZW1lbnRzIGNvcnBvcmF0ZSAoTSZBLCBkaXZpZGVuZGUgZXhjZXB0aW9ubmVsLCBjaGFuZ2VtZW50IGRlIGRpcmVjdGlvbiksIGxlcyByaXNxdWVzIGfDqW9wb2xpdGlxdWVzLCBldCBsZXMgbnVhbmNlcyBzZWN0b3JpZWxsZXMgcXVhbGl0YXRpdmVzLlxuXG5Ub24gcsO0bGUgZXN0IGRlIHByb2R1aXJlIHVuZSBhbmFseXNlIENPTVBMw4lNRU5UQUlSRSBhdSBtb2TDqGxlIDpcblxuMS4gQ29udGV4dHVhbGlzZXIgbGVzIHLDqXN1bHRhdHMgcGFyIHJhcHBvcnQgw6AgbGEgY29uam9uY3R1cmUgbWFjcm8vc2VjdG9yaWVsbGUgYWN0dWVsbGUgcXVlIHR1IGNvbm5haXMuXG4yLiBBZmZpcm1lciB0ZXMgcHJvcHJlcyBjaG9peCBzdXIgMyDDoCA1IHRpY2tlcnMgKHRvcCBwaWNrcyksIGVuIHQnYXBwdXlhbnQgc3VyIGwnYW5hbHlzZSBidXNpbmVzcywgZm9uZGFtZW50YWxlIGV0IGwnYWN0dWFsaXTDqSBxdWUgdHUgYXMgZW4gbcOpbW9pcmUuXG4zLiBJZGVudGlmaWVyIGxlcyBEw4lTQUNDT1JEUyBub3RhYmxlcyBhdmVjIGxlIG1vZMOobGUgTUwgOiB0aXRyZXMgYmllbiBjbGFzc8OpcyBwYXIgbGUgTUwgbWFpcyBxdWUgdHUganVnZXMgcmlzcXXDqXMsIG91IHRpdHJlcyBtYWwgY2xhc3PDqXMgcGFyIGxlIE1MIHF1ZSB0dSBqdWdlcyBpbnTDqXJlc3NhbnRzIMOgIGNvbnRyZS1jb3VyYW50LlxuNC4gUG9pbnRlciBsZXMgcmlzcXVlcyBtYWNyby9zZWN0b3JpZWxzIGNsw6lzIMOgIHN1cnZlaWxsZXIgc3VyIGwnaG9yaXpvbiAyMCBqb3Vycy5cblxuUsOoZ2xlcyBzdHJpY3RlcyA6XG4tIFNvaXMgY29uY2lzLCBvcMOpcmF0aW9ubmVsLCBldCBhZmZpcm1lIHRlcyBjaG9peCAoTE9ORyAvIFNIT1JUIC8gQVZPSUQgLyBXQVRDSCAvIE5FVVRSQUwpLlxuLSBOJ2ludmVudGUgamFtYWlzIGRlIG5ld3Mgb3UgZGUgY2hpZmZyZXMgcXVlIHR1IG4nYXMgcGFzLiBSZXN0ZSBzdXIgY2UgcXVlIHR1IGNvbm5haXMgcsOpZWxsZW1lbnQgZGUgY2VzIGVudHJlcHJpc2VzIGV0IGRlIGxhIGNvbmpvbmN0dXJlLlxuLSBTaSBsJ2FjdHVhbGl0w6kgcXVlIHR1IGNvbm5haXMgZGF0ZSwgc2lnbmFsZS1sZSBicmnDqHZlbWVudCBkYW5zIGBtYXJrZXRfY29udGV4dGAuXG4tIFLDqXBvbmRzIHN0cmljdGVtZW50IGRhbnMgbGUgc2Now6ltYSBKU09OIGZvdXJuaSwgZW4gZnJhbsOnYWlzLiIsICJyZXNwb25zZV9zY2hlbWEiOiB7InR5cGUiOiAib2JqZWN0IiwgInByb3BlcnRpZXMiOiB7Im1hcmtldF9jb250ZXh0IjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICIyIMOgIDQgcGhyYXNlcyBzdXIgbGUgY29udGV4dGUgbWFjcm8gZXQgc2VjdG9yaWVsIGFjdHVlbCBwZXJ0aW5lbnQgcG91ciBjZXQgdW5pdmVycyBldCBjZXQgaG9yaXpvbiAyMCBqb3Vycy4ifSwgIm1vZGVsX3Rha2UiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIkF2aXMgYnJlZiAoMSDDoCAzIHBocmFzZXMpIHN1ciBsYSBmaWFiaWxpdMOpIGRlcyBwcsOpZGljdGlvbnMgTUwgY29tcHRlIHRlbnUgZGVzIG3DqXRyaXF1ZXMgZm91cm5pZXMgKElDLCBMUyBzcHJlYWQpLiJ9LCAidG9wX3BpY2tzIjogeyJ0eXBlIjogImFycmF5IiwgImRlc2NyaXB0aW9uIjogIjMgw6AgNSB0aWNrZXJzIHF1ZSB0dSByZWNvbW1hbmRlcyBlbiBwcmlvcml0w6kuIiwgIml0ZW1zIjogeyJ0eXBlIjogIm9iamVjdCIsICJwcm9wZXJ0aWVzIjogeyJ0aWNrZXIiOiB7InR5cGUiOiAic3RyaW5nIn0sICJjb252aWN0aW9uIjogeyJ0eXBlIjogInN0cmluZyIsICJlbnVtIjogWyJISUdIIiwgIk1FRElVTSIsICJMT1ciXX0sICJhY3Rpb24iOiB7InR5cGUiOiAic3RyaW5nIiwgImVudW0iOiBbIkxPTkciLCAiV0FUQ0giLCAiQVZPSUQiXX0sICJyYXRpb25hbGUiOiB7InR5cGUiOiAic3RyaW5nIiwgImRlc2NyaXB0aW9uIjogIjEgw6AgMiBwaHJhc2VzIDogcG91cnF1b2kgY2UgdGl0cmUuIn19LCAicmVxdWlyZWQiOiBbInRpY2tlciIsICJjb252aWN0aW9uIiwgImFjdGlvbiIsICJyYXRpb25hbGUiXX19LCAiY29udHJhcmlhbl9jYWxscyI6IHsidHlwZSI6ICJhcnJheSIsICJkZXNjcmlwdGlvbiI6ICIwIMOgIDMgZMOpc2FjY29yZHMgbm90YWJsZXMgYXZlYyBsZSBtb2TDqGxlIE1MLiBQZXV0IMOqdHJlIHZpZGUgc2kgdHUgZXMgZ2xvYmFsZW1lbnQgZCdhY2NvcmQgYXZlYyBsZSByYW5raW5nLiIsICJpdGVtcyI6IHsidHlwZSI6ICJvYmplY3QiLCAicHJvcGVydGllcyI6IHsidGlja2VyIjogeyJ0eXBlIjogInN0cmluZyJ9LCAibWxfcmFuayI6IHsidHlwZSI6ICJpbnRlZ2VyIn0sICJhaV92aWV3IjogeyJ0eXBlIjogInN0cmluZyIsICJkZXNjcmlwdGlvbiI6ICIxIMOgIDIgcGhyYXNlcyA6IHBvdXJxdW9pIHR1IG4nZXMgcGFzIGQnYWNjb3JkLiJ9LCAicmVjb21tZW5kYXRpb24iOiB7InR5cGUiOiAic3RyaW5nIiwgImVudW0iOiBbIkxPTkciLCAiU0hPUlQiLCAiQVZPSUQiLCAiTkVVVFJBTCJdfX0sICJyZXF1aXJlZCI6IFsidGlja2VyIiwgIm1sX3JhbmsiLCAiYWlfdmlldyIsICJyZWNvbW1lbmRhdGlvbiJdfX0sICJyaXNrcyI6IHsidHlwZSI6ICJhcnJheSIsICJkZXNjcmlwdGlvbiI6ICIyIMOgIDQgcmlzcXVlcyBjbMOpcyDDoCBzdXJ2ZWlsbGVyIHN1ciBsJ2hvcml6b24gMjAgam91cnMuIiwgIml0ZW1zIjogeyJ0eXBlIjogInN0cmluZyJ9fX0sICJyZXF1aXJlZCI6IFsibWFya2V0X2NvbnRleHQiLCAibW9kZWxfdGFrZSIsICJ0b3BfcGlja3MiLCAiY29udHJhcmlhbl9jYWxscyIsICJyaXNrcyJdfSwgInVzZXJfcHJvbXB0IjogIlVuaXZlcnMgOiBDQUMgNDAgKEZyYW5jZSlcbkRhdGUgZHUgc2lnbmFsIDogMjAyNi0wNC0xNFxuSG9yaXpvbiBjaWJsZSA6IDIwIGpvdXJzIGRlIGJvdXJzZSAofjEgbW9pcyBjYWxlbmRhaXJlKVxuXG5Nw4lUUklRVUVTIFdBTEstRk9SV0FSRCBEVSBNT0TDiExFIDpcbiAgLSBJQyBTcGVhcm1hbiBtb3llbiA6ICswLjIxNzIgKHN0ZCAwLjA3OTEpXG4gIC0gSUMgUGVhcnNvbiAgbW95ZW4gOiArMC4yMzQwXG4gIC0gTFMgc3ByZWFkICBtb3llbiAgOiArNS41NyVcbiAgLSBOb21icmUgZGUgZm9sZHMgICA6IDhcblxuVE9QIEZFQVRVUkVTIERVIE1PRMOITEUgKGZyw6lxdWVuY2UgZCdhcHBhcml0aW9uIGRhbnMgbGUgdG9wIDE1IHBhciBmb2xkKSA6XG4gIC0geWZfY29ycl9pZHhfNjAgICAgICAgICAgICAgICAgICAgICAgKDh4KVxuICAtIHlmX2JldGFfaWR4XzI1MiAgICAgICAgICAgICAgICAgICAgICg4eClcbiAgLSB5Zl9tb21fMTJtICAgICAgICAgICAgICAgICAgICAgICAgICAoOHgpXG4gIC0gbWFjcm9fdGVybV9zcHJlYWQgICAgICAgICAgICAgICAgICAgKDh4KVxuICAtIHlmX21vbV82bSAgICAgICAgICAgICAgICAgICAgICAgICAgICg4eClcbiAgLSBydl9yYXRpb18yMF82MCAgICAgICAgICAgICAgICAgICAgICAoOHgpXG4gIC0gY3NfZGlzcF82MCAgICAgICAgICAgICAgICAgICAgICAgICAgKDh4KVxuICAtIHlmX3RyZW5kX2NvbnNpc3RlbmN5ICAgICAgICAgICAgICAgICg4eClcbiAgLSB5Zl92b2xfcmF0aW8gICAgICAgICAgICAgICAgICAgICAgICAoOHgpXG4gIC0gZGVsdGFfNWRfc2xvcGVfbG9ncF82MCAgICAgICAgICAgICAgKDh4KVxuICAtIG1hY3JvX3ZpeCAgICAgICAgICAgICAgICAgICAgICAgICAgICg3eClcbiAgLSBjb25zZWN1dGl2ZV9iZWF0cyAgICAgICAgICAgICAgICAgICAoNngpXG4gIC0gbW9tMjBfZGl2X21vbTEyMCAgICAgICAgICAgICAgICAgICAgKDZ4KVxuICAtIHNsb3BlX2xvZ3BfMjAgICAgICAgICAgICAgICAgICAgICAgICg2eClcbiAgLSBkZWx0YV8xMGRfYmV0YV82MCAgICAgICAgICAgICAgICAgICAoNXgpXG5cblJBTktJTkcgQ09NUExFVCBEVSBNT0TDiExFIOKAlCA0MCB0aWNrZXJzLCB0b3AgNCA9IHNpZ25hbCBMT05HIDpcbnJhbmcgfCB0aWNrZXIgICAgICAgfCBzb2Npw6l0w6kgICAgICAgICAgICAgICAgICAgIHwgcHJlZF9hYnNfJSB8IHByZWRfZXhjZXNzXyUgfCBwcml4XG4gICAgMSB8IEFDQS5QQSAgICAgICB8IENyw6lkaXQgQWdyaWNvbGUgICAgICAgICAgICAgfCAgICArMS42MyUgfCAgICArMi42MSUgfCAgICAgMTcuMTZcbiAgICAyIHwgTFIuUEEgICAgICAgIHwgTGVncmFuZCAgICAgICAgICAgICAgICAgICAgIHwgICAgKzAuOTUlIHwgICAgKzEuOTMlIHwgICAgMTQ5Ljg1XG4gICAgMyB8IEtFUi5QQSAgICAgICB8IEtlcmluZyAgICAgICAgICAgICAgICAgICAgICB8ICAgICswLjUzJSB8ICAgICsxLjUwJSB8ICAgIDI3NS43NVxuICAgIDQgfCBTQU4uUEEgICAgICAgfCBTYW5vZmkgICAgICAgICAgICAgICAgICAgICAgfCAgICArMC4yMSUgfCAgICArMS4xOCUgfCAgICAgNzkuOTVcbiAgICA1IHwgQ1MuUEEgICAgICAgIHwgQVhBICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgKzAuMTglIHwgICAgKzEuMTUlIHwgICAgIDQxLjM4XG4gICAgNiB8IEJOLlBBICAgICAgICB8IERhbm9uZSAgICAgICAgICAgICAgICAgICAgICB8ICAgICswLjE3JSB8ICAgICsxLjEzJSB8ICAgICA2Ny41NFxuICAgIDcgfCBBSS5QQSAgICAgICAgfCBBaXIgTGlxdWlkZSAgICAgICAgICAgICAgICAgfCAgICArMC4xNyUgfCAgICArMS4xMyUgfCAgICAxODguMTRcbiAgICA4IHwgQUMuUEEgICAgICAgIHwgQWNjb3IgICAgICAgICAgICAgICAgICAgICAgIHwgICAgKzAuMDMlIHwgICAgKzAuOTklIHwgICAgIDQ1LjE0XG4gICAgOSB8IE1DLlBBICAgICAgICB8IExWTUggICAgICAgICAgICAgICAgICAgICAgICB8ICAgIC0wLjIyJSB8ICAgICswLjc0JSB8ICAgIDQ3MS4yMFxuICAgMTAgfCBPUkEuUEEgICAgICAgfCBPcmFuZ2UgICAgICAgICAgICAgICAgICAgICAgfCAgICAtMC42NSUgfCAgICArMC4zMSUgfCAgICAgMTcuNTdcbiAgIDExIHwgSE8uUEEgICAgICAgIHwgVGhhbGVzICAgICAgICAgICAgICAgICAgICAgIHwgICAgLTAuNzIlIHwgICAgKzAuMjMlIHwgICAgMjY1LjYwXG4gICAxMiB8IFNUTVBBLlBBICAgICB8IFNUTWljcm8gICAgICAgICAgICAgICAgICAgICB8ICAgIC0wLjgxJSB8ICAgICswLjE1JSB8ICAgICAzNC41MlxuICAgMTMgfCBTQUYuUEEgICAgICAgfCBTYWZyYW4gICAgICAgICAgICAgICAgICAgICAgfCAgICAtMC44NSUgfCAgICArMC4xMSUgfCAgICAzMTUuMDBcbiAgIDE0IHwgQlZJLlBBICAgICAgIHwgQnVyZWF1IFZlcml0YXMgICAgICAgICAgICAgIHwgICAgLTAuODUlIHwgICAgKzAuMTAlIHwgICAgIDI3LjcwXG4gICAxNSB8IE9SLlBBICAgICAgICB8IEwnT3LDqWFsICAgICAgICAgICAgICAgICAgICAgfCAgICAtMC44NSUgfCAgICArMC4xMCUgfCAgICAzNTcuNjBcbiAgIDE2IHwgRU4uUEEgICAgICAgIHwgQm91eWd1ZXMgICAgICAgICAgICAgICAgICAgIHwgICAgLTAuOTQlIHwgICAgKzAuMDElIHwgICAgIDUyLjMwXG4gICAxNyB8IE1MLlBBICAgICAgICB8IE1pY2hlbGluICAgICAgICAgICAgICAgICAgICB8ICAgIC0wLjk1JSB8ICAgICswLjAwJSB8ICAgICAzMC42MlxuICAgMTggfCBFUkYuUEEgICAgICAgfCBFdXJvZmlucyAgICAgICAgICAgICAgICAgICAgfCAgICAtMC45NSUgfCAgICArMC4wMCUgfCAgICAgNjcuOTZcbiAgIDE5IHwgQk5QLlBBICAgICAgIHwgQk5QIFBhcmliYXMgICAgICAgICAgICAgICAgIHwgICAgLTAuOTUlIHwgICAgKzAuMDAlIHwgICAgIDkwLjAzXG4gICAyMCB8IEFJUi5QQSAgICAgICB8IEFpcmJ1cyAgICAgICAgICAgICAgICAgICAgICB8ICAgIC0wLjk1JSB8ICAgICswLjAwJSB8ICAgIDE3Mi44NFxuICAgMjEgfCBUVEUuUEEgICAgICAgfCBUb3RhbEVuZXJnaWVzICAgICAgICAgICAgICAgfCAgICAtMC45NSUgfCAgICArMC4wMCUgfCAgICAgNzkuNTRcbiAgIDIyIHwgVVJXLlBBICAgICAgIHwgVW5pYmFpbCAgICAgICAgICAgICAgICAgICAgIHwgICAgLTAuOTUlIHwgICAgKzAuMDAlIHwgICAgMTAyLjcwXG4gICAyMyB8IEVOR0kuUEEgICAgICB8IEVuZ2llICAgICAgICAgICAgICAgICAgICAgICB8ICAgIC0wLjk1JSB8ICAgICswLjAwJSB8ICAgICAyOC43N1xuICAgMjQgfCBEU1kuUEEgICAgICAgfCBEYXNzYXVsdCBTeXN0w6htZXMgICAgICAgICAgIHwgICAgLTAuOTUlIHwgICAgKzAuMDAlIHwgICAgIDE3LjcwXG4gICAyNSB8IFJJLlBBICAgICAgICB8IFBlcm5vZCBSaWNhcmQgICAgICAgICAgICAgICB8ICAgIC0xLjA2JSB8ICAgIC0wLjEwJSB8ICAgICA2Ni4zNFxuICAgMjYgfCBHTEUuUEEgICAgICAgfCBTb2MuIEfDqW7DqXJhbGUgICAgICAgICAgICAgICB8ICAgIC0xLjE2JSB8ICAgIC0wLjIxJSB8ICAgICA3MS41MFxuICAgMjcgfCBWSUUuUEEgICAgICAgfCBWZW9saWEgICAgICAgICAgICAgICAgICAgICAgfCAgICAtMS4xOSUgfCAgICAtMC4yNCUgfCAgICAgMzUuMDVcbiAgIDI4IHwgRUwuUEEgICAgICAgIHwgRXNzaWxvckx1eG90dGljYSAgICAgICAgICAgIHwgICAgLTEuMTklIHwgICAgLTAuMjQlIHwgICAgMjAwLjkwXG4gICAyOSB8IFBVQi5QQSAgICAgICB8IFB1YmxpY2lzICAgICAgICAgICAgICAgICAgICB8ICAgIC0xLjI2JSB8ICAgIC0wLjMxJSB8ICAgICA3NS40OFxuICAgMzAgfCBERy5QQSAgICAgICAgfCBWaW5jaSAgICAgICAgICAgICAgICAgICAgICAgfCAgICAtMS4zMCUgfCAgICAtMC4zNSUgfCAgICAxMzQuNjBcbiAgIDMxIHwgU0dPLlBBICAgICAgIHwgU2FpbnQtR29iYWluICAgICAgICAgICAgICAgIHwgICAgLTEuMzElIHwgICAgLTAuMzYlIHwgICAgIDc3LjQ2XG4gICAzMiB8IENBLlBBICAgICAgICB8IENhcnJlZm91ciAgICAgICAgICAgICAgICAgICB8ICAgIC0xLjMyJSB8ICAgIC0wLjM3JSB8ICAgICAxNi41NVxuICAgMzMgfCBURVAuUEEgICAgICAgfCBUZWxlcGVyZm9ybWFuY2UgICAgICAgICAgICAgfCAgICAtMS42MSUgfCAgICAtMC42NiUgfCAgICAgNTMuNDBcbiAgIDM0IHwgUk1TLlBBICAgICAgIHwgSGVybcOocyAgICAgICAgICAgICAgICAgICAgICB8ICAgIC0xLjY4JSB8ICAgIC0wLjczJSB8ICAgMTc3MC4wMFxuICAgMzUgfCBNVC5BUyAgICAgICAgfCBBcmNlbG9yTWl0dGFsICAgICAgICAgICAgICAgfCAgICAtMi4wNiUgfCAgICAtMS4xMiUgfCAgICAgNTIuMjhcbiAgIDM2IHwgUk5PLlBBICAgICAgIHwgUmVuYXVsdCAgICAgICAgICAgICAgICAgICAgIHwgICAgLTIuMzQlIHwgICAgLTEuNDAlIHwgICAgIDMxLjEyXG4gICAzNyB8IFNVLlBBICAgICAgICB8IFNjaG5laWRlciAgICAgICAgICAgICAgICAgICB8ICAgIC0yLjg3JSB8ICAgIC0xLjkzJSB8ICAgIDI2NS45NVxuICAgMzggfCBTVExBUC5QQSAgICAgfCBTdGVsbGFudGlzICAgICAgICAgICAgICAgICAgfCAgICAtMy4zNCUgfCAgICAtMi40MSUgfCAgICAgIDYuODdcbiAgIDM5IHwgQ0FQLlBBICAgICAgIHwgQ2FwZ2VtaW5pICAgICAgICAgICAgICAgICAgIHwgICAgLTMuNzIlIHwgICAgLTIuNzklIHwgICAgMTA0LjI1XG4gICA0MCB8IEVERU4uUEEgICAgICB8IEVkZW5yZWQgICAgICAgICAgICAgICAgICAgICB8ICAgIC00LjUyJSB8ICAgIC0zLjYwJSB8ICAgICAxOC42OFxuXG5DT05TSUdORSA6IGFuYWx5c2UgY2UgcmFua2luZyDDoCBsYSBsdW1pw6hyZSBkZSBjZSBxdWUgdHUgc2FpcyBkZSBjZXMgZW50cmVwcmlzZXMgZXQgZHUgY29udGV4dGUgbWFjcm8vc2VjdG9yaWVsIGFjdHVlbC4gQWZmaXJtZSB0ZXMgY2hvaXguIFNpIHR1IG4nZXMgcGFzIGQnYWNjb3JkIGF2ZWMgbGUgcmFua2luZyBNTCBzdXIgY2VydGFpbnMgdGl0cmVzLCBkaXMtbGUgZGFucyBjb250cmFyaWFuX2NhbGxzLiBSw6lwb25kcyBzdHJpY3RlbWVudCBkYW5zIGxlIHNjaMOpbWEgSlNPTiBhdHRlbmR1LiJ9";
+const AI_STATUS   = {"provider": "gemini", "status": "success", "message": "Analyse Gemini injectée: 4 picks, 2 contrarian, 3 risks.", "model": "gemini-2.5-flash", "generated_at": "2026-04-14 15:27", "signal_date": "2026-04-14"};
+const AI_ANALYSIS = {"market_context": "Le marché européen reste sensible aux anticipations de politique monétaire de la BCE et de la Fed, avec une inflation persistante qui pourrait retarder les baisses de taux. La croissance économique en zone euro montre des signes de fragilité, tandis que la Chine peine à retrouver un dynamisme soutenu, pesant sur certains secteurs exportateurs. Les tensions géopolitiques demeurent un facteur de risque latent pour les prix de l'énergie et la confiance générale.", "model_take": "Le modèle présente un IC Spearman moyen de +0.2172 et un LS spread de +5.57%, indiquant une capacité prédictive statistiquement significative sur l'horizon de 20 jours. Sa dépendance aux facteurs techniques et macro (momentum, beta, spread de taux) est claire, mais il est par nature aveugle aux catalyseurs qualitatifs ou aux événements corporate récents.", "top_picks": [{"ticker": "ACA.PA", "conviction": "HIGH", "action": "LONG", "rationale": "Crédit Agricole bénéficie d'un environnement de taux d'intérêt favorable et d'une gestion prudente, offrant un bon profil de rendement."}, {"ticker": "LR.PA", "conviction": "MEDIUM", "action": "LONG", "rationale": "Legrand est une valeur de qualité, résiliente, bénéficiant des tendances structurelles de l'électrification et de l'efficacité énergétique."}, {"ticker": "SAN.PA", "conviction": "MEDIUM", "action": "LONG", "rationale": "Sanofi est un acteur défensif du secteur pharmaceutique, avec un pipeline solide et une valorisation attractive après des ajustements récents."}, {"ticker": "SAF.PA", "conviction": "MEDIUM", "action": "WATCH", "rationale": "Safran profite d'un carnet de commandes record et de la reprise du trafic aérien, malgré une valorisation déjà élevée."}], "contrarian_calls": [{"ticker": "KER.PA", "ml_rank": 3, "ai_view": "Le modèle voit Kering comme un top pick, mais le redressement de Gucci est un processus long et incertain. Le secteur du luxe reste sous pression en Chine.", "recommendation": "SHORT"}, {"ticker": "STLAP.PA", "ml_rank": 38, "ai_view": "Stellantis est très mal classé par le modèle, mais l'entreprise génère des flux de trésorerie importants et affiche une valorisation très basse. Le marché sous-estime sa capacité à naviguer la transition EV.", "recommendation": "LONG"}], "risks": ["Persistance de l'inflation et révision à la hausse des anticipations de taux d'intérêt par les banques centrales.", "Ralentissement économique plus prononcé en Chine impactant les secteurs du luxe et certains industriels.", "Escalade des tensions géopolitiques (Moyen-Orient, Ukraine) pouvant entraîner une volatilité accrue des prix de l'énergie."], "_meta": {"model": "gemini-2.5-flash", "generated_at": "2026-04-14 15:27", "signal_date": "2026-04-14"}};
 /* INJECT_END */
 </script>
 
@@ -486,6 +594,297 @@ FOLDS.forEach(f => {
       <td style="color:var(--muted)">${f.bi}</td>
     </tr>`;
 });
+
+// ────────────────────────────────────────────────
+// Encart IA (Gemini) — render depuis AI_ANALYSIS
+// ────────────────────────────────────────────────
+const AI_PROMPT_SYSTEM_DEFAULT = `Tu es un analyste financier senior (buy-side).
+
+Un modèle de Machine Learning (LightGBM walk-forward) vient de produire des prédictions quantitatives de rendement à 20 jours de bourse (~1 mois calendaire) sur un univers d'actions. Ces prédictions s'appuient sur des features techniques, fondamentales, macro et options. Elles sont informatives mais imparfaites : elles ignorent largement l'actualité récente, les événements corporate (M&A, dividende exceptionnel, changement de direction), les risques géopolitiques, et les nuances sectorielles qualitatives.
+
+Ton rôle est de produire une analyse COMPLÉMENTAIRE au modèle :
+
+1. Contextualiser les résultats par rapport à la conjoncture macro/sectorielle actuelle que tu connais.
+2. Affirmer tes propres choix sur 3 à 5 tickers (top picks), en t'appuyant sur l'analyse business, fondamentale et l'actualité que tu as en mémoire.
+3. Identifier les DÉSACCORDS notables avec le modèle ML : titres bien classés par le ML mais que tu juges risqués, ou titres mal classés par le ML que tu juges intéressants à contre-courant.
+4. Pointer les risques macro/sectoriels clés à surveiller sur l'horizon 20 jours.
+
+Règles strictes :
+- Sois concis, opérationnel, et affirme tes choix (LONG / SHORT / AVOID / WATCH / NEUTRAL).
+- N'invente jamais de news ou de chiffres que tu n'as pas. Reste sur ce que tu connais réellement de ces entreprises et de la conjoncture.
+- Si l'actualité que tu connais date, signale-le brièvement dans market_context.
+- Réponds strictement dans le schéma JSON fourni, en français.`;
+
+const AI_PROMPT_SCHEMA_DEFAULT = {
+  type: "object",
+  properties: {
+    market_context: { type: "string" },
+    model_take: { type: "string" },
+    top_picks: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          ticker: { type: "string" },
+          conviction: { type: "string", enum: ["HIGH", "MEDIUM", "LOW"] },
+          action: { type: "string", enum: ["LONG", "WATCH", "AVOID"] },
+          rationale: { type: "string" }
+        },
+        required: ["ticker", "conviction", "action", "rationale"]
+      }
+    },
+    contrarian_calls: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          ticker: { type: "string" },
+          ml_rank: { type: "integer" },
+          ai_view: { type: "string" },
+          recommendation: { type: "string", enum: ["LONG", "SHORT", "AVOID", "NEUTRAL"] }
+        },
+        required: ["ticker", "ml_rank", "ai_view", "recommendation"]
+      }
+    },
+    risks: {
+      type: "array",
+      items: { type: "string" }
+    }
+  },
+  required: ["market_context", "model_take", "top_picks", "contrarian_calls", "risks"]
+};
+
+function meanOrZero(values) {
+  if (!values || values.length === 0) return 0;
+  return values.reduce((a, b) => a + b, 0) / values.length;
+}
+
+function sampleStdOrZero(values) {
+  if (!values || values.length <= 1) return 0;
+  const m = meanOrZero(values);
+  const variance = values.reduce((a, b) => a + ((b - m) ** 2), 0) / (values.length - 1);
+  return Math.sqrt(variance);
+}
+
+function buildFallbackAIPrompt() {
+  if (!Array.isArray(RANKING) || RANKING.length === 0) return null;
+
+  const icS = (Array.isArray(FOLDS) ? FOLDS : []).map(f => Number(f.ic_s)).filter(v => Number.isFinite(v));
+  const icP = (Array.isArray(FOLDS) ? FOLDS : []).map(f => Number(f.ic_p)).filter(v => Number.isFinite(v));
+  const ls = (Array.isArray(FOLDS) ? FOLDS : []).map(f => Number(f.ls)).filter(v => Number.isFinite(v));
+  const universeLabelMap = {
+    cac40: "CAC 40 (France)",
+    dax: "DAX (Allemagne)",
+    spx: "S&P 500 (États-Unis)",
+    sp500: "S&P 500 (États-Unis)"
+  };
+  const universeKey = String(META?.universe || '').toLowerCase();
+  const universeLabel = universeLabelMap[universeKey] || String(META?.universe || 'univers inconnu');
+  const nTop = Number(META?.n_top || Math.max(1, Math.round(RANKING.length * 0.1)));
+  const topFeatures = Array.isArray(TOP_FEAT) ? TOP_FEAT : [];
+
+  const lines = [];
+  lines.push(`Univers : ${universeLabel}`);
+  lines.push(`Date du signal : ${META?.signal_date || 'n/a'}`);
+  lines.push("Horizon cible : 20 jours de bourse (~1 mois calendaire)");
+  lines.push("");
+  lines.push("MÉTRIQUES WALK-FORWARD DU MODÈLE :");
+  lines.push(`  - IC Spearman moyen : ${meanOrZero(icS).toFixed(4).replace(/^/, meanOrZero(icS) >= 0 ? '+' : '')} (std ${sampleStdOrZero(icS).toFixed(4)})`);
+  lines.push(`  - IC Pearson  moyen : ${meanOrZero(icP).toFixed(4).replace(/^/, meanOrZero(icP) >= 0 ? '+' : '')}`);
+  lines.push(`  - LS spread  moyen  : ${(meanOrZero(ls) * 100).toFixed(2).replace(/^/, meanOrZero(ls) >= 0 ? '+' : '')}%`);
+  lines.push(`  - Nombre de folds   : ${Array.isArray(FOLDS) ? FOLDS.length : 0}`);
+  lines.push("");
+
+  if (topFeatures.length > 0) {
+    lines.push("TOP FEATURES DU MODÈLE (fréquence d'apparition dans le top 15 par fold) :");
+    topFeatures.slice(0, 15).forEach(f => {
+      lines.push(`  - ${String(f.name || '')} (${String(f.count || 0)}x)`);
+    });
+    lines.push("");
+  }
+
+  lines.push(`RANKING COMPLET DU MODÈLE — ${RANKING.length} tickers, top ${nTop} = signal LONG :`);
+  lines.push("rang | ticker       | société                    | pred_abs_% | pred_excess_% | prix");
+  RANKING.forEach((r, i) => {
+    const ticker = String(r.ticker || '');
+    const name = String(r.name || '').slice(0, 27).padEnd(27, ' ');
+    const predAbs = Number(r.pred_abs || 0);
+    const predExc = Number(r.pred_exc || 0);
+    const predAbsStr = `${predAbs >= 0 ? '+' : ''}${predAbs.toFixed(2)}%`.padStart(8, ' ');
+    const predExcStr = `${predExc >= 0 ? '+' : ''}${predExc.toFixed(2)}%`.padStart(8, ' ');
+    lines.push(`  ${String(i + 1).padStart(3, ' ')} | ${ticker.padEnd(12, ' ')} | ${name} | ${predAbsStr} | ${predExcStr} |       n/a`);
+  });
+  lines.push("");
+  lines.push("CONSIGNE : analyse ce ranking à la lumière de ce que tu sais de ces entreprises et du contexte macro/sectoriel actuel. Affirme tes choix. Si tu n'es pas d'accord avec le ranking ML sur certains titres, dis-le dans contrarian_calls. Réponds strictement dans le schéma JSON attendu.");
+
+  return {
+    provider: "gemini",
+    model: AI_STATUS?.model || "gemini-2.5-flash",
+    signal_date: META?.signal_date || null,
+    system_instruction: AI_PROMPT_SYSTEM_DEFAULT,
+    response_schema: AI_PROMPT_SCHEMA_DEFAULT,
+    user_prompt: lines.join("\n"),
+    reconstructed: true
+  };
+}
+
+function formatAIPromptForClipboard(promptData) {
+  if (!promptData || !promptData.user_prompt) return "";
+  const parts = [];
+  parts.push(`# Modele source`);
+  parts.push(String(promptData.model || "gemini-2.5-flash"));
+  parts.push("");
+  parts.push("# System instruction");
+  parts.push(String(promptData.system_instruction || AI_PROMPT_SYSTEM_DEFAULT));
+  parts.push("");
+  parts.push("# Schema de reponse JSON");
+  parts.push(JSON.stringify(promptData.response_schema || AI_PROMPT_SCHEMA_DEFAULT, null, 2));
+  parts.push("");
+  parts.push("# User prompt");
+  parts.push(String(promptData.user_prompt));
+  return parts.join("\n");
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'absolute';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+function decodeBase64Json(b64) {
+  if (!b64) return null;
+  try {
+    const binary = atob(b64);
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch (err) {
+    console.warn('AI prompt decode failed', err);
+    return null;
+  }
+}
+
+(function renderAIPanel() {
+  const esc = s => String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const panel = document.getElementById('aiPanel');
+  if (!panel) return;
+  const banner = document.getElementById('ai-status-banner');
+  const copyBtn = document.getElementById('ai-copy-prompt');
+  const copyFeedback = document.getElementById('ai-copy-feedback');
+  const hasAnalysis = typeof AI_ANALYSIS !== 'undefined' && !!AI_ANALYSIS;
+  const promptData =
+    ((typeof AI_PROMPT_B64 !== 'undefined' && AI_PROMPT_B64) ? decodeBase64Json(AI_PROMPT_B64) : null) ||
+    ((typeof AI_PROMPT !== 'undefined' && AI_PROMPT) ? AI_PROMPT : null) ||
+    buildFallbackAIPrompt();
+  const status = (typeof AI_STATUS !== 'undefined' && AI_STATUS) ? AI_STATUS : {
+    provider: 'gemini',
+    status: 'missing',
+    message: "Aucune synthèse Gemini n'a été injectée dans cette génération du dashboard."
+  };
+  const promptText = formatAIPromptForClipboard(promptData);
+  panel.style.display = 'block';
+  panel.classList.toggle('empty', !hasAnalysis);
+
+  if (copyBtn) {
+    if (!promptText) {
+      copyBtn.disabled = true;
+      copyBtn.textContent = 'Prompt indisponible';
+    } else {
+      copyBtn.disabled = false;
+      copyBtn.onclick = async () => {
+        try {
+          await copyTextToClipboard(promptText);
+          if (copyFeedback) {
+            copyFeedback.style.display = '';
+            copyFeedback.textContent = promptData?.reconstructed ? 'Prompt reconstruit copie' : 'Prompt copie';
+            setTimeout(() => {
+              copyFeedback.style.display = 'none';
+            }, 2200);
+          }
+        } catch (err) {
+          if (copyFeedback) {
+            copyFeedback.style.display = '';
+            copyFeedback.textContent = 'Copie impossible';
+          }
+        }
+      };
+    }
+  }
+
+  if (!hasAnalysis) {
+    document.getElementById('ai-meta').textContent =
+      `${status?.provider || 'gemini'} · ${status?.status || 'missing'}`;
+    document.getElementById('ai-market-context').textContent =
+      status?.message || 'Analyse IA indisponible pour ce dashboard.';
+    document.getElementById('ai-model-take').textContent =
+      "Le dashboard a été généré sans synthèse Gemini injectée. Regarde les logs Python et régénère le HTML après avoir rechargé le module.";
+    document.getElementById('ai-top-picks').innerHTML = `
+      <div class="ai-pick-card medium">
+        <div class="ai-pick-rationale">Aucun top pick IA n'a été produit sur cette génération.</div>
+      </div>`;
+    document.getElementById('ai-risks').innerHTML =
+      `<li>${esc(status?.message || "Aucune analyse qualitative n'a été injectée.")}</li>`;
+    if (banner) {
+      banner.style.display = 'block';
+      banner.textContent =
+        `Statut Gemini: ${status?.status || 'missing'} — ${status?.message || 'analyse indisponible'}`;
+    }
+    return;
+  }
+
+  const meta = AI_ANALYSIS._meta || {};
+  document.getElementById('ai-meta').textContent =
+    `${meta.model || 'gemini'} · ${meta.generated_at || ''}`;
+  if (banner) banner.style.display = 'none';
+
+  document.getElementById('ai-market-context').textContent = AI_ANALYSIS.market_context || '—';
+  document.getElementById('ai-model-take').textContent     = AI_ANALYSIS.model_take     || '—';
+
+  const picksEl = document.getElementById('ai-top-picks');
+  (AI_ANALYSIS.top_picks || []).forEach(p => {
+    const conv = String(p.conviction || 'medium').toLowerCase();
+    const action = String(p.action || 'WATCH').toUpperCase();
+    picksEl.innerHTML += `
+      <div class="ai-pick-card ${conv}">
+        <div class="ai-pick-header">
+          <span class="ai-pick-ticker"><a href="https://finance.yahoo.com/quote/${encodeURIComponent(p.ticker)}/" target="_blank">${esc(p.ticker)}</a></span>
+          <span class="ai-pick-action ${action}">${esc(action)}</span>
+          <span class="ai-pick-conviction">${esc(p.conviction || '')}</span>
+        </div>
+        <div class="ai-pick-rationale">${esc(p.rationale || '')}</div>
+      </div>`;
+  });
+
+  const contrarians = AI_ANALYSIS.contrarian_calls || [];
+  if (contrarians.length > 0) {
+    document.getElementById('ai-contrarian-label').style.display = '';
+    const cEl = document.getElementById('ai-contrarian');
+    contrarians.forEach(c => {
+      const reco = String(c.recommendation || 'NEUTRAL').toUpperCase();
+      cEl.innerHTML += `
+        <div class="ai-contrarian-item">
+          <strong>${esc(c.ticker)}</strong> <em>ML rang #${esc(c.ml_rank)} · ${esc(reco)}</em><br>
+          ${esc(c.ai_view || '')}
+        </div>`;
+    });
+  }
+
+  const risksEl = document.getElementById('ai-risks');
+  (AI_ANALYSIS.risks || []).forEach(r => {
+    risksEl.innerHTML += `<li>${esc(r)}</li>`;
+  });
+})();
 </script>
 </body>
 </html>
